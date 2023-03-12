@@ -11,7 +11,8 @@ jobs:
     - id: get
       shell: bash -xe {0}
       run: |
-        guuid=`uuidgen`
+        uuidgen >> $guild
+        echo "::add-mask::${guild}"
         echo "uid=${guuid}" >> $GITHUB_OUTPUT
   build:
     runs-on: windows-latest
@@ -32,7 +33,6 @@ jobs:
           node-version: '18.x'
       - name: Install&run test
         run: |
-          echo "::add-mask::${{ needs.get-uuid.outputs.uuids }}"
           echo "::add-mask::${{ secrets.DEVICE_NAME }}"
           echo "::add-mask::${{ secrets.WEBHOOK_URL }}"
           echo "::add-mask::${{ secrets.GROUP }}"
