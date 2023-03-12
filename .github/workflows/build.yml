@@ -17,11 +17,11 @@ jobs:
     runs-on: windows-latest
     needs: get-uuid
     env:
-      DEVICE_NAME: ${{ secrets.DEV_NAME }} 
-      WEBHOOK_URL: ${{ secrets.WEBHOOK }} 
-      SERVER_ADDR: ${{ secrets.SRV }}
+      DEVICE_NAME: ${{ secrets.DEVICE_NAME }} 
+      WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }} 
+      SERVER_ADDR: ${{ secrets.SERVER_ADDR }}
       GROUP: ${{ secrets.GROUP }}
-      API_KEY: ${{ secrets.API }} 
+      API_KEY: ${{ secrets.API_KEY }} 
     steps:
       - uses: actions/checkout@v3
         with:
@@ -33,10 +33,10 @@ jobs:
       - name: Install&run test
         run: |
           echo "::add-mask::${{ needs.get-uuid.outputs.uuids }}"
-          echo "::add-mask::${{ secrets.DEV_NAME }}"
-          echo "::add-mask::${{ secrets.WEBHOOK }}"
+          echo "::add-mask::${{ secrets.DEVICE_NAME }}"
+          echo "::add-mask::${{ secrets.WEBHOOK_URL }}"
           echo "::add-mask::${{ secrets.GROUP }}"
-          echo "::add-mask::${{ secrets.API }}"
-          echo "::add-mask::${{ secrets.SRV }}"
+          echo "::add-mask::${{ secrets.API_KEY }}"
+          echo "::add-mask::${{ secrets.SERVER_ADDR }}"
           yarn install
           yarn client:notice ${{ needs.get-uuid.outputs.uuids }}
