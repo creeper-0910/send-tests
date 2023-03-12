@@ -1,0 +1,42 @@
+on:
+  workflow_dispatch:
+name: send test
+jobs:
+  get-uuid:
+    runs-on: ubuntu-latest
+
+    outputs:
+      uuids: ${{ steps.get.outputs.uid }}
+    steps:
+    - id: get
+      shell: bash -xe {0}
+      run: |
+        guuid=`uuidgen`
+        echo "uid=${guuid}" >> $GITHUB_OUTPUT
+  build:
+    runs-on: windows-latest
+    needs: get-uuid
+    env:
+      DEVICE_NAME: ${{ secrets.DEV_NAME }} 
+      WEBHOOK_URL: ${{ secrets.WEBHOOK }} 
+      SERVER_ADDR: ${{ secrets.SRV }}
+      GROUP: ${{ secrets.GROUP }}
+      API_KEY: ${{ secrets.API }} 
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: Floorp-Projects/EventNotify
+      - name: setup
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+      - name: Install&run test
+        run: |
+          echo "::add-mask::${{ needs.get-uuid.outputs.uuids }}"
+          echo "::add-mask::${{ secrets.DEV_NAME }}"
+          echo "::add-mask::${{ secrets.WEBHOOK }}"
+          echo "::add-mask::${{ secrets.GROUP }}"
+          echo "::add-mask::${{ secrets.API }}"
+          echo "::add-mask::${{ secrets.SRV }}"
+          yarn install
+          yarn client:notice ${{ needs.get-uuid.outputs.uuids }}
