@@ -11,7 +11,7 @@ jobs:
     - id: get
       shell: bash -xe {0}
       run: |
-        guild=""
+        export guild=""
         uuidgen >> ${guild}
         echo "::add-mask::${guild}"
         echo "uid=${guuid}" >> $GITHUB_OUTPUT
